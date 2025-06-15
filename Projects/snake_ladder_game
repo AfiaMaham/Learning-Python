@@ -1,0 +1,111 @@
+import random
+import time
+
+def player(score, new_score):
+    if score == 1:
+        new_score = score + 37
+    elif score == 4:
+        new_score = score + 10
+    elif score == 9:
+        new_score = score + 23
+    elif score == 21:
+        new_score = score + 22
+    elif score == 28:
+        new_score = score + 57
+    elif score == 51:
+        new_score = score + 17
+    elif score == 72:
+        new_score = score + 20
+    elif score == 80:
+        new_score = score + 20
+    elif score == 17:
+        new_score = score - 11
+    elif score == 54:
+        new_score = score - 21
+    elif score == 62:
+        new_score = score - 44
+    elif score == 64:
+        new_score = score - 5
+    elif score == 87:
+        new_score = score - 52
+    elif score == 93:
+        new_score = score - 21
+    elif score == 95:
+        new_score = score - 21
+    elif score == 98:
+        new_score = score - 20
+    return new_score
+
+def terminate(score, dice):
+    if score >= 95 and score <= 100 and dice > 5:
+        score -= dice
+    elif score >= 96 and score <= 100 and dice > 4:
+        score -= dice
+    elif score >= 97 and score <= 100 and dice > 3:
+        score -= dice
+    elif score >= 98 and score <= 100 and dice > 2:
+        score -= dice
+    elif score >= 99 and score <= 100 and dice > 1:
+        score -= dice
+    elif score >= 100 and dice >= 1:
+        score -= dice
+    return score
+
+def snake_ladder(score):
+    if score in [1, 4, 9, 21, 28, 51, 72, 80]:
+        return "#######    "
+    elif score in [17, 54, 62, 64, 87, 93, 95, 98]:
+        return "~~~~~~~~"
+    else:
+        return "           "
+
+def main():
+    random.seed(time.time())
+    players = [""] * 4
+    finished = [False] * 4
+    scores = [0] * 4
+    new_score = 0
+
+    num = int(input("Enter number of players from 1 to 4: "))
+
+    for j in range(num):
+        players[j] = input(f"Player {j + 1} enter your name: ")
+
+    print("Press Enter for your turn: ")
+    print("Turn no\t\tName\t\tDice\t\tScore\t\tSnake / Ladder\tNew score")
+
+    input()  # initial pause
+
+    turn = 1
+    while True:
+        for start in range(1, num + 1):
+            if finished[start - 1]:
+                continue
+            input()
+            dice = random.randint(1, 6)
+
+            if dice == 6 or scores[start - 1] != 0:
+                scores[start - 1] = terminate(scores[start - 1], dice)
+                scores[start - 1] += dice
+                fate = snake_ladder(scores[start - 1])
+                updated_score = player(scores[start - 1], new_score)
+
+                print(f"{turn}\t\t{players[start - 1]}\t\t{dice}\t\t{scores[start - 1]}\t\t{fate}\t{updated_score}")
+
+                if updated_score != 0:
+                    scores[start - 1] = updated_score
+
+                if scores[start - 1] >= 100:
+                    print(f"Player {players[start - 1]} has completed the game")
+                    finished[start - 1] = True
+            else:
+                print(f"Dice should be 6 to start the game for player {start}!")
+
+        if all(finished[j] for j in range(num)):
+            print("Game Over!")
+            break
+
+        turn += 1
+
+if __name__ == "__main__":
+    main()
